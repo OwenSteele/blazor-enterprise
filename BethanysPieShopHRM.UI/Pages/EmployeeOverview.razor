@@ -3,6 +3,8 @@
 
 <h1 class="page-title">All employees</h1>
 
+<p>@Message</p>
+
 @if (Employees == null)
 {
     <p><em>Loading...</em></p>
@@ -23,7 +25,7 @@ else
             @foreach (var employee in Employees)
             {
                 <tr>
-                    <td><img width="35" src="/images/professional.png" class="rounded-circle" /></td>
+                    <td><img width="30" src="/images/professional.png" class="rounded-circle" /></td>
                     <td>@employee.EmployeeId</td>
                     <td>@employee.FirstName</td>
                     <td>@employee.LastName</td>

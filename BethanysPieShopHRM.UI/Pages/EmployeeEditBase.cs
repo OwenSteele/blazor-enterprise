@@ -6,6 +6,7 @@ using BethanysPieShopHRM.UI.Services;
 using BethanysPieShopHRM.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.ProtectedBrowserStorage;
 
 namespace BethanysPieShopHRM.UI.Pages
 {
@@ -20,19 +21,25 @@ namespace BethanysPieShopHRM.UI.Pages
         [Inject]
         public IJobCategoryDataService JobCategoryDataService { get; set; }
 
+        [Inject]
+        public ProtectedLocalStorage LocalStorageService { get; set; }
+
         [Inject] 
         public NavigationManager NavigationManager { get; set; }
+
+        [Inject]
+        public IEmailService emailService { get; set; }
 
         [Parameter]
         public string EmployeeId { get; set; }
 
         public InputText LastNameInputText { get; set; }
 
-        public Employee Employee { get; set; } = new Employee();
-
-        //needed to bind to select to value
-        protected string CountryId = string.Empty;
-        protected string JobCategoryId = string.Empty;
+        public Employee Employee { get; set; } = new Employee {
+            Address = new Address(),
+            Contact = new Contact(),
+            JobCategoryId = 1, BirthDate = DateTime.Now, JoinedDate = DateTime.Now 
+        };
 
         //used to store state of screen
         protected string Message = string.Empty;
@@ -50,28 +57,20 @@ namespace BethanysPieShopHRM.UI.Pages
 
             int.TryParse(EmployeeId, out var employeeId);
 
-            if (employeeId == 0) //new employee is being created
-            {
-                //add some defaults
-                Employee = new Employee { CountryId = 1, JobCategoryId = 1, BirthDate = DateTime.Now, JoinedDate = DateTime.Now };
-            }
-            else
+            if (employeeId != 0) //new employee is being created
             {
                 Employee = await EmployeeDataService.GetEmployeeDetails(int.Parse(EmployeeId));
             }
-
-            CountryId = Employee.CountryId.ToString();
-            JobCategoryId = Employee.JobCategoryId.ToString();
         }
 
         protected async Task HandleValidSubmit()
         {
-            Employee.CountryId = int.Parse(CountryId);
-            Employee.JobCategoryId = int.Parse(JobCategoryId);
-
             if (Employee.EmployeeId == 0) //new
             {
                 var addedEmployee = await EmployeeDataService.AddEmployee(Employee);
+
+                emailService.SendEmail();
+
                 if (addedEmployee != null)
                 {
                     StatusClass = "alert-success";

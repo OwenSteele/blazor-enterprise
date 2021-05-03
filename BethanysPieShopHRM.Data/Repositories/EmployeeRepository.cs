@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BethanysPieShopHRM.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace BethanysPieShopHRM.Api.Models
 {
@@ -20,7 +21,12 @@ namespace BethanysPieShopHRM.Api.Models
 
         public Employee GetEmployeeById(int employeeId)
         {
-            return _appDbContext.Employees.FirstOrDefault(c => c.EmployeeId == employeeId);
+            var employee = _appDbContext.Employees
+                .Include(x => x.Address)
+                .Include(x => x.Contact)
+                .Include(x => x.JobCategory)
+                .FirstOrDefault(c => c.EmployeeId == employeeId);
+            return employee;
         }
 
         public Employee AddEmployee(Employee employee)
@@ -36,22 +42,32 @@ namespace BethanysPieShopHRM.Api.Models
 
             if (foundEmployee != null)
             {
-                foundEmployee.CountryId = employee.CountryId;
-                foundEmployee.MaritalStatus = employee.MaritalStatus;
-                foundEmployee.BirthDate = employee.BirthDate;
-                foundEmployee.City = employee.City;
-                foundEmployee.Email = employee.Email;
                 foundEmployee.FirstName = employee.FirstName;
                 foundEmployee.LastName = employee.LastName;
-                foundEmployee.Gender = employee.Gender;
-                foundEmployee.PhoneNumber = employee.PhoneNumber;
+                foundEmployee.MaritalStatus = employee.MaritalStatus;
+                foundEmployee.BirthDate = employee.BirthDate;
                 foundEmployee.Smoker = employee.Smoker;
-                foundEmployee.Street = employee.Street;
-                foundEmployee.Zip = employee.Zip;
                 foundEmployee.JobCategoryId = employee.JobCategoryId;
                 foundEmployee.Comment = employee.Comment;
                 foundEmployee.ExitDate = employee.ExitDate;
                 foundEmployee.JoinedDate = employee.JoinedDate;
+                foundEmployee.Gender = employee.Gender;
+
+                // Address
+                foundEmployee.Address.City = employee.Address.City;
+                foundEmployee.Address.Street = employee.Address.Street;
+                foundEmployee.Address.State = employee.Address.State;
+                foundEmployee.Address.Zip = employee.Address.Zip;
+                foundEmployee.Address.Country = employee.Address.Country;
+                foundEmployee.Address.Latitude = employee.Address.Latitude;
+                foundEmployee.Address.Longitude = employee.Address.Longitude;
+                
+                // Contact
+                foundEmployee.Contact.PhoneNumber = employee.Contact.PhoneNumber;
+                foundEmployee.Contact.EmergencyName = employee.Contact.EmergencyName;
+                foundEmployee.Contact.EmergencyPhoneNumber = employee.Contact.EmergencyPhoneNumber;
+                foundEmployee.Contact.PersonalEmail = employee.Contact.PersonalEmail;
+                foundEmployee.Contact.CompanyEmail = employee.Contact.CompanyEmail;
 
                 _appDbContext.SaveChanges();
 

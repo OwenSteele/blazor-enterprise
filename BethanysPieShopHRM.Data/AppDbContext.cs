@@ -20,6 +20,8 @@ namespace BethanysPieShopHRM.Api.Models
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<Survey> Surveys { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,52 +48,85 @@ namespace BethanysPieShopHRM.Api.Models
             modelBuilder.Entity<JobCategory>().HasData(new JobCategory() { JobCategoryId = 8, JobCategoryName = "Cleaning" });
             modelBuilder.Entity<JobCategory>().HasData(new JobCategory() { JobCategoryId = 9, JobCategoryName = "Bakery" });
 
+
             modelBuilder.Entity<Employee>().HasData(new List<Employee>()
             {
                 new Employee()
                 {
                     EmployeeId = 1,
-                    CountryId = 1,
                     MaritalStatus = MaritalStatus.Single,
                     BirthDate = new DateTime(1979, 1, 16),
-                    City = "Brussels",
-                    Email = "bethany@bethanyspieshop.com",
                     FirstName = "Bethany",
                     LastName = "Smith",
                     Gender = Gender.Female,
-                    PhoneNumber = "324777888773",
                     Smoker = false,
-                    Street = "Grote Markt 1",
-                    Zip = "1000",
                     JobCategoryId = 1,
                     Comment = "Lorem Ipsum",
                     ExitDate = null,
                     JoinedDate = new DateTime(2015, 3, 1),
-                    Latitude = 50.8503,
-                    Longitude = 4.3517
+                    IsFTE = true
                 },
                 new Employee()
                 {
                     EmployeeId = 2,
-                    CountryId = 1,
                     MaritalStatus = MaritalStatus.Single,
                     BirthDate = new DateTime(1979, 1, 16),
-                    City = "New York",
-                    Email = "bob@bethanyspieshop.com",
                     FirstName = "Bob",
                     LastName = "Smith",
                     Gender = Gender.Female,
-                    PhoneNumber = "55512312321",
                     Smoker = false,
-                    Street = "Apple Road",
-                    Zip = "59555",
                     JobCategoryId = 1,
                     Comment = "Lorem Ipsum",
                     ExitDate = null,
                     JoinedDate = new DateTime(2015, 3, 1),
-                    Latitude = 46.8503,
-                    Longitude = 48.3517
                 }
+            });
+
+            modelBuilder.Entity<Address>().HasData(new Address()
+            {
+                AddressId = 1,
+                City = "Farmington",
+                Street = "182 W Union Ave",
+                Zip = "84025",
+                State = "Utah",
+                Country = "United States",
+                EmployeeId = 1,
+                Latitude = 40.7608,
+                Longitude = -111.8910
+            });
+            modelBuilder.Entity<Address>().HasData(new Address()
+            {
+                AddressId = 2,
+                City = "Farmington",
+                Street = "182 W Union Ave",
+                Zip = "84025",
+                State = "Utah",
+                Country = "United States",
+                EmployeeId = 2,
+                Latitude = 40.7608,
+                Longitude = -111.8910
+            });
+
+            modelBuilder.Entity<Contact>().HasData(new Contact()
+            {
+                ContactId = 1,
+                PersonalEmail = "test@test.com",
+                CompanyEmail = "bethany@bethanyspieshop.com",
+                PhoneNumber = "555-123-1234",
+                EmergencyName = "Bob",
+                EmergencyPhoneNumber = "555-234-4567",
+                EmployeeId = 1
+            });
+
+            modelBuilder.Entity<Contact>().HasData(new Contact()
+            {
+                ContactId = 2,
+                PersonalEmail = "sample@test.com",
+                CompanyEmail = "bob@bethanyspieshop.com",
+                PhoneNumber = "555-123-1234",
+                EmergencyName = "Tim",
+                EmergencyPhoneNumber = "555-123-4567",
+                EmployeeId = 2
             });
 
             modelBuilder.Entity<Currency>().HasData(new Currency()

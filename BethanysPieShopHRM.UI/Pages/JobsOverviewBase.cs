@@ -9,16 +9,17 @@ using Microsoft.AspNetCore.Components;
 
 namespace BethanysPieShopHRM.UI.Pages
 {
-    public class StaffDirectoryBase: ComponentBase
+    public class JobsOverviewBase: ComponentBase
     {
         [Inject]
-        public IEmployeeDataService EmployeeDataService { get; set; }
+        public IJobDataService JobService { get; set; }
 
-        public List<Employee> Employees { get; set; }
+        public List<Job> Jobs { get; set; }
+
 
         protected override async Task OnInitializedAsync()
         {
-            Employees = (await EmployeeDataService.GetAllEmployees()).ToList();
+            Jobs = (await JobService.GetAllJobs()).ToList();
         }
     }
 }

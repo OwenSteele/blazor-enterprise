@@ -9,7 +9,7 @@ using BethanysPieShopHRM.Shared;
 
 namespace BethanysPieShopHRM.UI.Services
 {
-    public class ExpenseDataService : IExpenseDataService
+    public class ExpenseDataService : IExpenseDataService, IPieShopAPI
     {
         private readonly HttpClient _httpClient;
 
@@ -45,12 +45,6 @@ namespace BethanysPieShopHRM.UI.Services
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<Expense>>
                 (await _httpClient.GetStreamAsync($"api/expense"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-        }
-
-        public async Task<IEnumerable<Currency>> GetAllCurrencies()
-        {
-            return await JsonSerializer.DeserializeAsync<IEnumerable<Currency>>
-                (await _httpClient.GetStreamAsync($"api/currency"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<Expense> GetExpenseById(int expenseId)

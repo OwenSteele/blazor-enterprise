@@ -239,7 +239,9 @@ nav {
     color: red;
 }
 
-
+.active {
+    font-weight: bold;
+}
 
 #sidebar {
     color: #fff;
@@ -304,6 +306,11 @@ a[data-toggle="collapse"] {
 
 .sub-menu {
     display: none;
+}
+
+.validation-message {
+    margin-left: 25px;
+    color: red;
 }
 
 #sidebar .toggle-hide {

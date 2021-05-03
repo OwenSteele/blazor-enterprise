@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BethanysPieShopHRM.UI.Services;
 using BethanysPieShopHRM.UI.Data;
+using System;
 
 namespace BethanysPieShopHRM.UI
 {
@@ -24,21 +25,35 @@ namespace BethanysPieShopHRM.UI
         {
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
-            
-            services.AddScoped<HttpClient>(s =>
-            {
-                var client = new HttpClient { BaseAddress = new System.Uri("https://localhost:44340/") }; 
-                return client;
-            });
 
-            //services.AddScoped<IEmployeeDataService, MockEmployeeDataService>();
-            services.AddScoped<IEmployeeDataService, EmployeeDataService>();
-            services.AddScoped<ICountryDataService, CountryDataService>();
-            services.AddScoped<IJobCategoryDataService, JobCategoryDataService>();
-            services.AddScoped<IExpenseDataService, ExpenseDataService>();
-            services.AddScoped<ITaskDataService, TaskDataService>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<ISurveyDataService, SurveyDataService>();
+
+            var pieShopURI = new Uri("https://localhost:44340/");
+            var recruitingURI = new Uri("https://localhost:5001/");
+
+            void RegisterTypedClient<TClient, TImplementation>(Uri apiBaseUrl) 
+                where TClient : class where TImplementation : class, TClient
+            {
+                services.AddHttpClient<TClient, TImplementation>(client =>
+                {
+                    client.BaseAddress = apiBaseUrl;
+                });
+            }
+
+            // HTTP services
+            RegisterTypedClient<IEmployeeDataService, EmployeeDataService>(pieShopURI);
+            RegisterTypedClient<ICountryDataService, CountryDataService>(pieShopURI);
+            RegisterTypedClient<IJobCategoryDataService, JobCategoryDataService>(pieShopURI);
+            RegisterTypedClient<ITaskDataService, TaskDataService>(pieShopURI);
+            RegisterTypedClient<ISurveyDataService, SurveyDataService>(pieShopURI);
+            RegisterTypedClient<ICurrencyDataService, CurrencyDataService>(pieShopURI);
+            RegisterTypedClient<IExpenseDataService, ExpenseDataService>(pieShopURI);
+            RegisterTypedClient<IJobDataService, JobsDataService>(recruitingURI);
+
+
+            // Helper services
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IExpenseApprovalService, ManagerApprovalService>();
+            services.AddProtectedBrowserStorage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
